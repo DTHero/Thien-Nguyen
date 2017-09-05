@@ -1,0 +1,107 @@
+{
+  "project_info": {
+    "project_number": "554839131196",
+    "firebase_url": "https://metal-hologram-172604.firebaseio.com",
+    "project_id": "metal-hologram-172604",
+    "storage_bucket": "metal-hologram-172604.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:554839131196:android:0cffb086af187332",
+        "android_client_info": {
+          "package_name": "com.example.internntthien.accountfacebook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "554839131196-1k4mhc22rdji284tqfkd5r5a9ttvqbfh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.internntthien.accountfacebook",
+            "certificate_hash": "0ceaf9c865ee6cdc3806caec32c36f27f17dab73"
+          }
+        },
+        {
+          "client_id": "554839131196-pl6e9mnu260aalks224688ln3molmj5o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.internntthien.accountfacebook",
+            "certificate_hash": "2c856c5e0509be31f9ff16852d364b12a25762b3"
+          }
+        },
+        {
+          "client_id": "554839131196-fsvejv322gd92p1tdlgrs2obbda8fm1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6jfqOdDovUs4JuDzRNb6fz7EFAyz7Tq8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "554839131196-fsvejv322gd92p1tdlgrs2obbda8fm1v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:554839131196:android:a902de88d3ab2ee3",
+        "android_client_info": {
+          "package_name": "com.example.internntthien.accountfacebook2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "554839131196-rbmv9capc0orbvjcdifcq54e1ateclrq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.internntthien.accountfacebook2",
+            "certificate_hash": "2c856c5e0509be31f9ff16852d364b12a25762b3"
+          }
+        },
+        {
+          "client_id": "554839131196-fsvejv322gd92p1tdlgrs2obbda8fm1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6jfqOdDovUs4JuDzRNb6fz7EFAyz7Tq8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "554839131196-fsvejv322gd92p1tdlgrs2obbda8fm1v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
