@@ -1,0 +1,17 @@
+version: "3.7"
+### NOTE:
+###   This docker-compose.yml is for build only.
+###   Find the docker-compose.yml or k8s service files in the installer dir.
+services:
+  web-app-test:
+    image: ${IMAGE_TAG}
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - ${NGINX_PORT}:${NGINX_PORT}
+    environment:
+      - NGINX_HOST=${NGINX_HOST}
+      - NGINX_PORT=${NGINX_PORT}
+    volumes:
+      - ./templates:/etc/nginx/templates

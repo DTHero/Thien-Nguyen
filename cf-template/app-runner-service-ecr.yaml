@@ -1,0 +1,120 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation template that represents a request driven web service on AWS App Runner.
+Parameters:
+  AppName:
+    Type: String
+    Default: "web-app"
+  EnvName:
+    Type: String
+    Default: "test"
+  WorkloadName:
+    Type: String
+    Default: "workload"
+  ContainerImage:
+    Type: String
+    Default: "349327579537.dkr.ecr.us-west-2.amazonaws.com/web-app-test:latest"
+  ContainerPort:
+    Type: Number
+    Default: "80"
+  ImageRepositoryType:
+    Type: String
+    Default: "ECR"
+  InstanceCPU:
+    Type: String
+    Default: "1 vCPU"
+  InstanceMemory:
+    Type: String
+    Default: "2 GB"
+  HealthCheckPath:
+    Type: String
+    Default: ""
+  HealthCheckInterval:
+    Type: String
+    Default: ""
+  HealthCheckTimeout:
+    Type: String
+    Default: ""
+  HealthCheckHealthyThreshold:
+    Type: String
+    Default: ""
+  HealthCheckUnhealthyThreshold:
+    Type: String
+    Default: ""
+
+Conditions:
+  # App Runner will not accept an AccessRole for ImageRepositoryTypes other than ECR.
+  # In this scenario the request will fail.
+  NeedsAccessRole: !Equals [!Ref ImageRepositoryType, "ECR"]
+  HasHealthCheckPath: !Not [!Equals [!Ref HealthCheckPath, ""]]
+  HasHealthCheckInterval: !Not [!Equals [!Ref HealthCheckInterval, ""]]
+  HasHealthCheckTimeout: !Not [!Equals [!Ref HealthCheckTimeout, ""]]
+  HasHealthCheckHealthyThreshold:
+    !Not [!Equals [!Ref HealthCheckHealthyThreshold, ""]]
+  HasHealthCheckUnhealthyThreshold:
+    !Not [!Equals [!Ref HealthCheckUnhealthyThreshold, ""]]
+
+Resources:
+  AccessRole:
+    Metadata:
+      "aws:copilot:description": "An IAM Role for App Runner to use on your behalf to pull your image from ECR"
+    Type: AWS::IAM::Role
+    Condition: NeedsAccessRole
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2008-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - build.apprunner.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess
+
+  # InstanceRole:
+  #   Metadata:
+  #     "aws:copilot:description": "An IAM role to control permissions for the containers in your service"
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: tasks.apprunner.amazonaws.com
+  #           Action: "sts:AssumeRole"
+
+  Service:
+    Metadata:
+      "aws:copilot:description": "An App Runner service to run and manage your containers"
+    Type: AWS::AppRunner::Service
+    Properties:
+      ServiceName: !Sub "${AppName}-${EnvName}-${WorkloadName}"
+      SourceConfiguration:
+        AuthenticationConfiguration: !If
+          - NeedsAccessRole
+          - AccessRoleArn: !GetAtt AccessRole.Arn
+          - !Ref AWS::NoValue
+        AutoDeploymentsEnabled: false
+        ImageRepository:
+          ImageIdentifier: !Ref ContainerImage
+          ImageRepositoryType: !Ref ImageRepositoryType
+          ImageConfiguration:
+            Port: !Ref ContainerPort
+            # RuntimeEnvironmentVariables:
+            #   - Name: COPILOT_APPLICATION_NAME
+            #     Value: !Ref AppName
+            #   - Name: COPILOT_ENVIRONMENT_NAME
+            #     Value: !Ref EnvName
+            #   - Name: COPILOT_SERVICE_NAME
+            #     Value: !Ref WorkloadName
+      InstanceConfiguration:
+        Cpu: !Ref InstanceCPU
+        Memory: !Ref InstanceMemory
+        # InstanceRoleArn: !GetAtt InstanceRole.Arn
+      Tags:
+        - Key: copilot-application
+          Value: !Ref AppName
+        - Key: copilot-environment
+          Value: !Ref EnvName
+        - Key: copilot-service
+          Value: !Ref WorkloadName
