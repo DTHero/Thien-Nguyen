@@ -2,12 +2,13 @@ version: "3.7"
 ###   Find the docker-compose.yml for build in the root dir of this project.
 services:
   web-app-test:
+    image: web-app-test:latest
     container_name: web-app-test
     build:
       context: ../
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ./docker/Dockerfile-local
     ports:
-      - 3000:3000
+      - 80:80
     environment:
       - NGINX_HOST=localhost
       - NGINX_PORT=80
