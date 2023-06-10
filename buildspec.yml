@@ -1,0 +1,36 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Check build info
+      - |
+        echo "----- PROJECT INFORMATION -----"
+        echo "CODEBUILD          - ${CODEBUILD_BUILD_ARN}"
+        echo "IMAGE TAG          - ${IMAGE_TAG}"
+        echo "AWS DEFAULT REGION - ${AWS_DEFAULT_REGION}"
+        echo "COMMIT SHA         - ${CODEBUILD_RESOLVED_SOURCE_VERSION}"
+        echo "TIMESTAMP          - ${CODEBUILD_START_TIME}"
+        echo "CLOUDWATCH ID      - ${CODEBUILD_LOG_PATH}"
+  pre_build:
+    commands:
+      - echo Configuring docker...
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+      - echo Configuring AWS CLI for publishing image to ECR...
+      - aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+      - aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+      - aws configure set region ${AWS_DEFAULT_REGION}
+      - aws configure set output json
+      - aws ${AWS_REGISTRY_TYPE} get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_REGISTRY_URL}
+      - aws --version
+  build:
+    commands:
+      - echo Build started on `date`...
+      - docker-compose -f docker/docker-compose.yml build --force-rm --no-cache
+      - docker tag ${IMAGE_TAG} ${AWS_REGISTRY_URL}/${IMAGE_TAG}
+      - echo Start publishing new image into ECR
+      - docker push ${AWS_REGISTRY_URL}/${IMAGE_TAG}
+  post_build:
+    commands:
+      - echo Build completed on `date`
